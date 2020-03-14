@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"errors"
 	"testing"
 	"time"
 )
@@ -40,10 +39,11 @@ func TestVerify(t *testing.T) {
 	if !verify {
 		t.Errorf("Error")
 	}
-	verify, err = Verify("...", []byte("Admin"))
-	if err == errors.New("bad token") {
-		t.Errorf("Bad token %v", err)
+	verify, err = Verify("....", []byte("Admin"))
+	if err == nil{
+		t.Errorf("Bad token")
 	}
+
 	verify, err = Verify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.InNodWhyYXQi.mRUZztnHpmmPgoQVwqmskqLKlDwgKUGIKM5E0F55la3oY", []byte("Adamin"))
 	if verify {
 		t.Errorf("Not correct token")
@@ -77,7 +77,7 @@ func Test_splitToken(t *testing.T) {
 		t.Errorf("wrong conclusion")
 	}
 	_, err = splitToken("a.a.a.a")
-	if err == errors.New("bad token") {
+	if err == nil {
 		t.Errorf("Bad token: %v", err)
 	}
 }
