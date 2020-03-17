@@ -20,8 +20,8 @@ type Header struct {
 }
 
 var defaultHeader = Header{
-	Alg: alg,
-	Typ: typ,
+	Alg: "HS256",
+	Typ: "JWT",
 }
 
 func Encode(payload interface{}, secret Secret) (token string, err error) {
@@ -87,11 +87,13 @@ func IsNotExpired(payload interface{}, moment time.Time) (ok bool, err error) {
 	fieldCount := reflectType.NumField()
 	for i := 0; i < fieldCount; i++ {
 		field := reflectType.Field(i)
-		tag, ok := field.Tag.Lookup(key)
+		// TODO: move this to const
+		tag, ok := field.Tag.Lookup("json")
 		if !ok {
 			continue
 		}
-			if tag == exp {
+		// TODO: move this to const
+		if tag == "exp" {
 			value := reflectValue.Field(i)
 			if value.Kind() != reflect.Int64 {
 				return false, errors.New("exp should be int64")
@@ -109,6 +111,7 @@ func splitToken(token string) (parts []string, err error) {
 	if len(parts) != 3 {
 		return nil, errors.New("bad token")
 	}
+
 	return parts, nil
 }
 
